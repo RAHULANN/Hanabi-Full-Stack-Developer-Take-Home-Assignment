@@ -5,8 +5,36 @@
     display: grid;
     grid-template-columns: repeat(2,300px);
     grid-gap: 20px;
+    align-items: right;
+    justify-items: left;
     padding: 40px;
 }
 #outlined-error-helper-text{
     width: 250px;
+}
+
+.formTable{
+    display: grid;
+    grid-template-columns: repeat(1,420px);
+    background-color: rgb(170, 163, 175);
+    border-radius: 16px;
+    grid-gap: 20px;
+    padding: 10px;
+    text-align: center;
+    justify-content: center;
+    justify-items: center;
+    align-items: center;
+}
+.formTableRow{
+    display: grid;
+    grid-template-columns: 130px 280px;
+   
+    border-radius: 16px;
+    height: 50px;
+    padding: 10px;
+   border: 1px solid black;
+    text-align: left;
+    justify-content: left;
+    justify-items: left;
+    align-items: center;
 }

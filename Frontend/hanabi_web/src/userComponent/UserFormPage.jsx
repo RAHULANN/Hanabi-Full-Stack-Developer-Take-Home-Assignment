@@ -11,13 +11,13 @@ import axios from "axios";
 export default function UserFormPage() {
   const navigate = useNavigate();
   const location = useLocation();
-  //   const [date, setDate] = useState(moment(new Date()).format("YYYY-MM-DD"));
+  const [date, setDate] = useState(moment(new Date()).format("YYYY-MM-DD"));
 
   const [userDetails, setUserDetails] = useState({
     name: "",
     phoneNumber: "",
     email: "",
-    dateOfBirth: "",
+    dateOfBirth: date,
   });
   const [errorMessage, setErrorMessage] = useState({
     name: "",
@@ -37,10 +37,65 @@ export default function UserFormPage() {
         dateOfBirth: userData?.dateOfBirth,
       });
     }
+    if (!state) {
+      navigate("/");
+    }
   }, []);
+  const formValidator = () => {
+    if (userDetails.name == "") {
+      setErrorMessage((prev) => ({ ...prev, name: "Enter user name" }));
+      return false;
+    }
+    if (!userDetails.email) {
+      setErrorMessage((prev) => ({ ...prev, email: "Enter email address!" }));
+
+      return false;
+    }
+
+    if (userDetails.email !== "") {
+      if (
+        /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(userDetails.email)
+      ) {
+        // return true;
+      } else {
+        setErrorMessage((prev) => ({
+          ...prev,
+          email: "You have entered an invalid email address!",
+        }));
+
+        return false;
+      }
+    }
+
+    if (!userDetails.dateOfBirth) {
+      setErrorMessage((prev) => ({
+        ...prev,
+        dateOfBirth: "Enter date of birth",
+      }));
+
+      return false;
+    }
+
+    if (!userDetails.phoneNumber) {
+      setErrorMessage((prev) => ({
+        ...prev,
+        phoneNumber: "Enter phone number",
+      }));
+
+      return false;
+    }
+
+    return true;
+  };
   const submit = () => {
     // console.log(location);
     let locationData = location?.state;
+
+    let error = formValidator();
+    if (!error) {
+      return;
+    }
+
     if (locationData?.data) {
       const data = JSON.stringify({
         name: userDetails?.name,
@@ -101,6 +156,7 @@ export default function UserFormPage() {
           error={errorMessage?.name}
           id="outlined-error-helper-text"
           label="Name"
+          type="text"
           defaultValue=""
           value={userDetails.name}
           helperText={errorMessage?.name}
@@ -115,6 +171,7 @@ export default function UserFormPage() {
           id="outlined-error-helper-text"
           label="Email"
           defaultValue=""
+          type="email"
           value={userDetails.email}
           helperText={errorMessage?.email}
           onChange={(e) => {
@@ -126,7 +183,8 @@ export default function UserFormPage() {
         <TextField
           error={errorMessage?.phoneNumber}
           id="outlined-error-helper-text"
-          label="Phone Number"
+          label="Phone number"
+          type="number"
           defaultValue=""
           value={userDetails.phoneNumber}
           helperText={errorMessage?.phoneNumber}
@@ -145,8 +203,9 @@ export default function UserFormPage() {
           label="Date of birth"
           type="date"
           value={userDetails.dateOfBirth}
-          format="DD-MM-YYYY"
+          // format="DD-MM-YYYY"
           //   value={date}
+          placeholder=""
           helperText={errorMessage?.dateOfBirth}
           onChange={(e) => {
             setUserDetails((prev) => ({
@@ -159,7 +218,7 @@ export default function UserFormPage() {
 
       <Box>
         <Button className="button" variant="contained" onClick={submit}>
-          Contained
+          Submit
         </Button>
       </Box>
     </Box>

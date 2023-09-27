@@ -10,8 +10,14 @@ import axios from "axios";
 
 export default function Home() {
   const [userName, setUserName] = useState("");
+  const [userNameError, setUserNameError] = useState("");
+
   const navigate = useNavigate();
   const tackUserName = (e) => {
+    if (!userName) {
+      setUserNameError("Enter username");
+      return;
+    }
     let axiosConfig = {
       method: "get",
 
@@ -41,15 +47,19 @@ export default function Home() {
       autoComplete="off"
     >
       <TextField
-        id="outlined-basic"
-        label="user name"
-        variant="outlined"
+        error={userNameError}
+        id="outlined-error-helper-text"
+        label="User name"
+        defaultValue=""
+        type="text"
+        value={userName}
+        helperText={userNameError}
         onChange={(e) => {
           setUserName(e.target.value);
         }}
       />
       <Button className="button" variant="contained" onClick={tackUserName}>
-        Contained
+        Save
       </Button>
     </Box>
   );

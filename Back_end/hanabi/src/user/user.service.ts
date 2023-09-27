@@ -13,12 +13,12 @@ export class UserService {
     ) {}
 async createUser (user:User):Promise<User> {
 
-    const createdUser=await this.userModule.create(user)
+    const createdUser=await this.userModule.create({...user,userName:user.userName.toLowerCase()})
     return createdUser
 }
     async findOne(userName:string): Promise <User>{
         
-        const userData= await this.userModule.findOne({userName:userName})
+        const userData= await this.userModule.findOne({userName:userName.toLowerCase()})
         if(!userData){
             throw new  NotFoundException("no data found");
         }
