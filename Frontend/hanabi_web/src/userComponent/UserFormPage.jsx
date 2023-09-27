@@ -16,13 +16,13 @@ export default function UserFormPage() {
   const location = useLocation();
   const [loading, setLoading] = useState(false);
   const [date, setDate] = useState(moment(new Date()).format("YYYY-MM-DD"));
-
-  const [userDetails, setUserDetails] = useState({
+  const initState = {
     name: "",
     phoneNumber: "",
     email: "",
     dateOfBirth: date,
-  });
+  };
+  const [userDetails, setUserDetails] = useState(initState);
   const [errorMessage, setErrorMessage] = useState({
     name: "",
     phoneNumber: "",
@@ -45,9 +45,14 @@ export default function UserFormPage() {
     // if someone trying to came directly in this page then we are sending the user to home page
 
     if (!state) {
-      navigate("/");
+      goToHomePage();
     }
   }, []);
+
+  const goToHomePage = () => {
+    navigate("/");
+    setUserDetails(initState);
+  };
   const formValidator = () => {
     if (userDetails.name == "") {
       setErrorMessage((prev) => ({ ...prev, name: "Enter user name" }));
@@ -244,9 +249,12 @@ export default function UserFormPage() {
           />
         </Box>
 
-        <Box>
+        <Box className="buttonBox">
           <Button className="button" variant="contained" onClick={submit}>
             Submit
+          </Button>
+          <Button className="button" variant="contained" color="error" onClick={goToHomePage}>
+            Cancel
           </Button>
         </Box>
       </Box>

@@ -18,6 +18,6 @@ async function bootstrap() {
   }))
 
   // default port is 3000 but i am running this in 4000  
-  await app.listen(4000);
+  await app.listen(process.env.PORT);
 }
 bootstrap();
