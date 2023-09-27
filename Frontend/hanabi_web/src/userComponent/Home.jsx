@@ -7,10 +7,13 @@ import "./userStyle.css";
 import { useNavigate } from "react-router-dom";
 import { IP } from "../config";
 import axios from "axios";
+import LoadingScreen from "../LoadingScreen";
+import { toast } from "react-toastify";
 
 export default function Home() {
   const [userName, setUserName] = useState("");
   const [userNameError, setUserNameError] = useState("");
+  const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
   const tackUserName = (e) => {
@@ -18,6 +21,7 @@ export default function Home() {
       setUserNameError("Enter username");
       return;
     }
+    setLoading(true);
     let axiosConfig = {
       method: "get",
 
@@ -30,37 +34,45 @@ export default function Home() {
     axios(axiosConfig)
       .then((res) => {
         console.log(res.data);
+        setLoading(false);
         navigate("./user_form", { state: { data: res.data } });
       })
       .catch((err) => {
-        // console.log(err);
-        navigate("./user_form", { state: { userName } });
+        console.log(err);
+        if (err?.response.data?.message == "no data found") {
+          navigate("./user_form", { state: { userName } });
+          return;
+        }
+        toast.error("something went wrong");
+        setLoading(false);
       });
   };
   return (
-    <Box
-      component="form"
-      sx={{
-        "& > :not(style)": { m: 1, width: "25ch" },
-      }}
-      noValidate
-      autoComplete="off"
-    >
-      <TextField
-        error={userNameError}
-        id="outlined-error-helper-text"
-        label="User name"
-        defaultValue=""
-        type="text"
-        value={userName}
-        helperText={userNameError}
-        onChange={(e) => {
-          setUserName(e.target.value);
-        }}
-      />
-      <Button className="button" variant="contained" onClick={tackUserName}>
-        Save
-      </Button>
+    <Box>
+      <LoadingScreen open={loading} />
+
+      <Box className="homePage">
+        <Box className="homeHeading">Welcome to your app</Box>
+        <Box>
+          <TextField
+            error={userNameError}
+            id="outlined-error-helper-text"
+            label="User name"
+            defaultValue=""
+            type="text"
+            value={userName}
+            helperText={userNameError}
+            onChange={(e) => {
+              setUserName(e.target.value);
+            }}
+          />
+        </Box>
+        <Box>
+          <Button className="button" variant="contained" onClick={tackUserName}>
+            Save
+          </Button>
+        </Box>
+      </Box>
     </Box>
   );
 }

@@ -18,15 +18,15 @@ export default function ResultPage() {
     navigate("/");
   };
   return (
-    <Box className="formBox">
+    <Box className="formPage">
       {/* <Box> This is result page</Box> */}
       <Box>
-        <Button className="button" variant="contained" onClick={goToHomePage}>
+        <Button className="button " variant="contained" onClick={goToHomePage}>
           click to go home page
         </Button>
       </Box>
-      <Box className="formTable">
-        <Box> Your details</Box>
+      <Box className="formTable formPage">
+        <Box className="homeHeading"> Your details</Box>
         <Box className="formTableRow">
           {" "}
           <Box>User name :</Box>

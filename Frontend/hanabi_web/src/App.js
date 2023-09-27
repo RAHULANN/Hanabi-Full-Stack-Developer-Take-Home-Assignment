@@ -4,9 +4,12 @@ import { Route, Router, Routes } from "react-router-dom";
 import Home from "./userComponent/Home";
 import UserFormPage from "./userComponent/UserFormPage";
 import ResultPage from "./userComponent/ResultPage";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 function App() {
   return (
     <div className="App">
+      <ToastContainer />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/user_form" element={<UserFormPage />} />

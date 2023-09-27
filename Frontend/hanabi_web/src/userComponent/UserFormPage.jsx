@@ -8,9 +8,13 @@ import moment from "moment";
 import { useLocation, useNavigate } from "react-router-dom";
 import { IP } from "../config";
 import axios from "axios";
+import LoadingScreen from "../LoadingScreen";
+import { toast } from "react-toastify";
+
 export default function UserFormPage() {
   const navigate = useNavigate();
   const location = useLocation();
+  const [loading, setLoading] = useState(false);
   const [date, setDate] = useState(moment(new Date()).format("YYYY-MM-DD"));
 
   const [userDetails, setUserDetails] = useState({
@@ -76,15 +80,24 @@ export default function UserFormPage() {
       return false;
     }
 
-    if (!userDetails.phoneNumber) {
+    // if (!userDetails.phoneNumber) {
+    //   setErrorMessage((prev) => ({
+    //     ...prev,
+    //     phoneNumber: "Enter phone number",
+    //   }));
+
+    //   return false;
+    // }
+
+    if (!/^[0-9]+$/.test(userDetails.phoneNumber)) {
+      // console.log(isNaN(userDetails.phoneNumber));
       setErrorMessage((prev) => ({
         ...prev,
-        phoneNumber: "Enter phone number",
+        phoneNumber: "Enter valid phone number",
       }));
 
       return false;
     }
-
     return true;
   };
   const submit = () => {
@@ -95,6 +108,8 @@ export default function UserFormPage() {
     if (!error) {
       return;
     }
+
+    setLoading(true);
 
     if (locationData?.data) {
       const data = JSON.stringify({
@@ -117,9 +132,13 @@ export default function UserFormPage() {
         .then((res) => {
           console.log(res.data);
           navigate("/result", { state: res.data });
+          setLoading(false);
         })
         .catch((err) => {
           console.log(err);
+          toast.error("something went wrong");
+
+          setLoading(false);
         });
     } else {
       const data = JSON.stringify({
@@ -142,84 +161,92 @@ export default function UserFormPage() {
       axios(axiosConfig)
         .then((res) => {
           console.log(res.data);
+          setLoading(false);
+
           navigate("/result", { state: res.data });
         })
         .catch((err) => {
+          setLoading(false);
+          toast.error("something went wrong");
           console.log(err);
         });
     }
   };
   return (
-    <Box component="form" className="formBox" noValidate autoComplete="off">
-      <Box>
-        <TextField
-          error={errorMessage?.name}
-          id="outlined-error-helper-text"
-          label="Name"
-          type="text"
-          defaultValue=""
-          value={userDetails.name}
-          helperText={errorMessage?.name}
-          onChange={(e) => {
-            setUserDetails((prev) => ({ ...prev, name: e.target.value }));
-          }}
-        />
-      </Box>
-      <Box>
-        <TextField
-          error={errorMessage?.email}
-          id="outlined-error-helper-text"
-          label="Email"
-          defaultValue=""
-          type="email"
-          value={userDetails.email}
-          helperText={errorMessage?.email}
-          onChange={(e) => {
-            setUserDetails((prev) => ({ ...prev, email: e.target.value }));
-          }}
-        />
-      </Box>
-      <Box>
-        <TextField
-          error={errorMessage?.phoneNumber}
-          id="outlined-error-helper-text"
-          label="Phone number"
-          type="number"
-          defaultValue=""
-          value={userDetails.phoneNumber}
-          helperText={errorMessage?.phoneNumber}
-          onChange={(e) => {
-            setUserDetails((prev) => ({
-              ...prev,
-              phoneNumber: e.target.value,
-            }));
-          }}
-        />
-      </Box>
-      <Box>
-        <TextField
-          error={errorMessage?.dateOfBirth}
-          id="outlined-error-helper-text"
-          label="Date of birth"
-          type="date"
-          value={userDetails.dateOfBirth}
-          // format="DD-MM-YYYY"
-          //   value={date}
-          placeholder=""
-          helperText={errorMessage?.dateOfBirth}
-          onChange={(e) => {
-            setUserDetails((prev) => ({
-              ...prev,
-              dateOfBirth: e.target.value,
-            }));
-          }}
-        />
-      </Box>
+    <Box className="formPage">
+      <LoadingScreen open={loading} />
+      <Box className="homeHeading"> Enter your details</Box>
+      <Box component="form" className="formBox" noValidate autoComplete="off">
+        <Box>
+          <TextField
+            error={errorMessage?.name}
+            id="outlined-error-helper-text"
+            label="Name"
+            type="text"
+            defaultValue=""
+            value={userDetails.name}
+            helperText={errorMessage?.name}
+            onChange={(e) => {
+              setUserDetails((prev) => ({ ...prev, name: e.target.value }));
+            }}
+          />
+        </Box>
+        <Box>
+          <TextField
+            error={errorMessage?.email}
+            id="outlined-error-helper-text"
+            label="Email"
+            defaultValue=""
+            type="email"
+            value={userDetails.email}
+            helperText={errorMessage?.email}
+            onChange={(e) => {
+              setUserDetails((prev) => ({ ...prev, email: e.target.value }));
+            }}
+          />
+        </Box>
+        <Box>
+          <TextField
+            error={errorMessage?.phoneNumber}
+            id="outlined-error-helper-text"
+            label="Phone number"
+            type="number"
+            defaultValue=""
+            value={userDetails.phoneNumber}
+            helperText={errorMessage?.phoneNumber}
+            onChange={(e) => {
+              setUserDetails((prev) => ({
+                ...prev,
+                phoneNumber: e.target.value,
+              }));
+            }}
+          />
+        </Box>
+        <Box>
+          <TextField
+            error={errorMessage?.dateOfBirth}
+            id="outlined-error-helper-text"
+            label="Date of birth"
+            type="date"
+            value={userDetails.dateOfBirth}
+            // format="DD-MM-YYYY"
+            //   value={date}
+            placeholder=""
+            helperText={errorMessage?.dateOfBirth}
+            onChange={(e) => {
+              setUserDetails((prev) => ({
+                ...prev,
+                dateOfBirth: e.target.value,
+              }));
+            }}
+          />
+        </Box>
 
-      <Box>
-        <Button className="button" variant="contained" onClick={submit}>
-          Submit
-        </Button>
+        <Box>
+          <Button className="button" variant="contained" onClick={submit}>
+            Submit
+          </Button>
+        </Box>
       </Box>
     </Box>
   );
