@@ -10,8 +10,9 @@ export default function ResultPage() {
   const location = useLocation();
   const locationState = location?.state;
   useEffect(() => {
+    // if someone trying to came directly in this page then we are sending the user to home page
     if (!locationState) {
-      navigate("/");
+      goToHomePage();
     }
   }, []);
   const goToHomePage = () => {

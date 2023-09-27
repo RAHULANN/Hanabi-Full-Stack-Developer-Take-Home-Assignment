@@ -33,6 +33,7 @@ export default function UserFormPage() {
   useEffect(() => {
     let state = location?.state;
     if (state?.data) {
+      // if we have user data which we have got in home page then set the data in a state
       let userData = state?.data;
       setUserDetails({
         name: userData?.name,
@@ -41,6 +42,8 @@ export default function UserFormPage() {
         dateOfBirth: userData?.dateOfBirth,
       });
     }
+    // if someone trying to came directly in this page then we are sending the user to home page
+
     if (!state) {
       navigate("/");
     }
@@ -57,6 +60,7 @@ export default function UserFormPage() {
     }
 
     if (userDetails.email !== "") {
+      // this is a regx for email validate if the email is not in correct formate then we are showing the error message
       if (
         /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(userDetails.email)
       ) {
@@ -80,14 +84,7 @@ export default function UserFormPage() {
       return false;
     }
 
-    // if (!userDetails.phoneNumber) {
-    //   setErrorMessage((prev) => ({
-    //     ...prev,
-    //     phoneNumber: "Enter phone number",
-    //   }));
-
-    //   return false;
-    // }
+    // this is a regx for Number validate if the phoneNumber is not in correct formate then we are showing the error message
 
     if (!/^[0-9]+$/.test(userDetails.phoneNumber)) {
       // console.log(isNaN(userDetails.phoneNumber));
@@ -105,12 +102,16 @@ export default function UserFormPage() {
     let locationData = location?.state;
 
     let error = formValidator();
+    // if we got some error for the formValidator function then return the function
     if (!error) {
       return;
     }
 
     setLoading(true);
+    // if every thing is good then we are making loading true
 
+    // if user is already  register in our DB then then we are calling the patch request and passing Id in params
+    // based on the api response we are moving user to another page or showing some error message
     if (locationData?.data) {
       const data = JSON.stringify({
         name: userDetails?.name,
@@ -141,6 +142,7 @@ export default function UserFormPage() {
           setLoading(false);
         });
     } else {
+      // if user is not register in our app then we are making post request with userName
       const data = JSON.stringify({
         name: userDetails?.name,
         email: userDetails?.email,
