@@ -27,7 +27,10 @@ export default function ResultPage() {
         </Button>
       </Box>
       <Box className="formTable formPage">
-        <Box className="homeHeading"> Your details</Box>
+        <Box className="homeHeading">
+          {" "}
+          Congratulation your details are saved
+        </Box>
         <Box className="formTableRow">
           {" "}
           <Box>User name :</Box>
