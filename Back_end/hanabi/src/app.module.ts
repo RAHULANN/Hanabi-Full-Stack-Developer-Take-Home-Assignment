@@ -6,6 +6,8 @@ import { ConfigModule } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
 
 @Module({
+
+  // i have putting all of my imports which i want to include in app like mongoose url and other module if we want
   imports: [
     ConfigModule.forRoot({
       envFilePath:".env",
